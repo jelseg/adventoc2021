@@ -5,47 +5,6 @@ def openInput(filename):
     return input
 
 
-'''
-class cave:
-    def __init__(self,name):
-        self.name = name
-        self.connections = [] #store cave names to witch it connects
-
-        if self.name != "start" and self.name != "end":
-            if self.name.isupper():
-                self.small = False
-            else:
-                self.small = True
-        else:
-            self.small = True
-
-
-def get_cave(name, caves):
-    for c in caves:
-        if name == c.name:
-            return c
-    return False
-
-def make_connections(input):
-    caves = []
-    for con in input:
-        c = get_cave(con[0],caves)
-        if c:
-            c.connections.append(con[1])
-        else:
-            c = cave(con[0])
-            c.connections.append(con[1])
-            caves.append(c)
-        c = get_cave(con[1],caves)
-        if c:
-            c.connections.append(con[0])
-        else:
-            c = cave(con[1])
-            c.connections.append(con[0])
-            caves.append(c)
-    return caves
-'''
-
 def make_connections(input):
     connections = {}
     for con in input:
@@ -68,7 +27,7 @@ def N_of_routes(caves,currentcavename,route):
         print(currentcavename + " does not exist")
         return 0
     if not currentcavename.isupper():
-        if currentcavename in route:
+        if currentcavename in route.split("-"):
             return 0
     if currentcavename == "start":
         route = "start"
@@ -78,9 +37,33 @@ def N_of_routes(caves,currentcavename,route):
     for c in caves[currentcavename]:
         s += N_of_routes(caves,c,route)
     return s
+
+def N_of_routes2(caves,currentcavename,route=[],twice=True):
+    route = [r for r in route]
+    if currentcavename == "end":
+        route.append(currentcavename)
+        #print('-'.join(route))
+        return 1
+    if not currentcavename in caves:
+        print(currentcavename + " does not exist")
+        return 0
+    if not currentcavename.isupper():
+        if currentcavename in route:
+            if currentcavename == "start":
+                return 0
+            elif twice:
+                twice = False
+            else:
+                return 0
+    
+    route.append(currentcavename)
+    s = 0
+    for c in caves[currentcavename]:
+        s += N_of_routes2(caves,c,route,twice)
+    return s
     
 
-input = openInput("test_input2.txt")
+input = openInput("input.txt")
 caves = make_connections(input)
 #print(get_cave("A",caves).connections)
-print(N_of_routes(caves,"start",""))
+print(N_of_routes2(caves,"start"))
