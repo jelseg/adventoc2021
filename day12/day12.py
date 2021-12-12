@@ -1,7 +1,4 @@
 
-from typing import NoReturn
-
-
 def openInput(filename):
     with open(filename,'r') as file:
         input = [line.strip("\n").split("-") for line in file]
